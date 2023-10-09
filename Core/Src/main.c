@@ -52,7 +52,9 @@ static void MX_GPIO_Init(void);
 static void MX_CAN1_Init(void);
 /* USER CODE BEGIN PFP */
 void configCANTxStandard(uint8_t, uint32_t);
+void configCANTxExtended(uint8_t dlc, uint32_t hexID);
 static void CAN_Filter(uint16_t, uint16_t, bool);
+void canTransmit(uint8_t txBuff[]);
 
 /* USER CODE END PFP */
 
@@ -79,6 +81,19 @@ void HAL_GPIO_EXT1_Callback(uint16_t GPIO_Pin)
 
 		HAL_CAN_AddTxMessage(&hcan1, &txHeader,txData ,&txMailbox);
 	}
+}
+
+/*
+ * @brief : A Wrapper to handle CAN transmit.
+ * @param1: Payload to be transmitted.
+ * @return: None.
+ * */
+void canTransmit(uint8_t txBuff[])
+{
+	if(HAL_CAN_AddTxMessage(&hcan1, &txHeader,txBuff ,&txMailbox) != HAL_OK) {
+		Error_Handler();
+	}
+
 }
 
 /*
@@ -274,7 +289,7 @@ static void MX_GPIO_Init(void)
 void configCANTxStandard(uint8_t dlc, uint32_t hexID)
 {
 	txHeader.DLC = dlc;
-	txHeader.IDE = CAN_ID_EXT;
+	txHeader.IDE = CAN_ID_STD;
 	txHeader.RTR = CAN_RTR_DATA;
 	txHeader.StdId = hexID;       // 11 Bit Standard CAN ID.
 
@@ -290,7 +305,7 @@ void configCANTxStandard(uint8_t dlc, uint32_t hexID)
 void configCANTxExtended(uint8_t dlc, uint32_t hexID)
 {
 	txHeader.DLC = dlc;
-	txHeader.IDE = CAN_ID_STD;
+	txHeader.IDE = CAN_ID_EXT;
 	txHeader.RTR = CAN_RTR_DATA;
 	txHeader.ExtId = hexID;             //29 bit Extended CAN ID for ISO Compatibility.
 
