@@ -55,7 +55,7 @@ void Error_Handler(void);
 /* USER CODE BEGIN EFP */
 void configCANTxStandard(uint8_t, uint32_t);
 void configCANTxExtended(uint8_t dlc, uint32_t hexID);
-static void CAN_Filter(uint16_t, uint16_t, bool);
+void CAN_Filter(uint16_t, uint16_t, bool);
 void canTransmit(uint8_t txBuff[]);
 /* USER CODE END EFP */
 

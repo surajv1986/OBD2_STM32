@@ -15,6 +15,9 @@
   *
   ******************************************************************************
   */
+#if !defined(__SOFT_FP__) && defined(__ARM_FP)
+  #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
+#endif
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
@@ -51,10 +54,7 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_CAN1_Init(void);
 /* USER CODE BEGIN PFP */
-void configCANTxStandard(uint8_t, uint32_t);
-void configCANTxExtended(uint8_t dlc, uint32_t hexID);
-static void CAN_Filter(uint16_t, uint16_t, bool);
-void canTransmit(uint8_t txBuff[]);
+
 
 /* USER CODE END PFP */
 
@@ -144,6 +144,7 @@ int main(void)
 
   /* Activate notification for data pending in the RX FIFO */
   HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -310,8 +311,14 @@ void configCANTxExtended(uint8_t dlc, uint32_t hexID)
 	txHeader.ExtId = hexID;             //29 bit Extended CAN ID for ISO Compatibility.
 
 }
-
-static void CAN_Filter(uint16_t lowID, uint16_t highID, bool isExtended)
+/*
+ * @brief : A function to configure CAN Filter.
+ * @param1: The lower 16 bytes of CAN PID.
+ * @param2: The higher 16 bytes of CAN PID.
+ * @param3: A boolean flag for choosing between extended filtering/ standard filtering, set false for standard filtering.
+ * @return: None.
+ * */
+void CAN_Filter(uint16_t lowID, uint16_t highID, bool isExtended)
 {
 	  CAN_FilterTypeDef  sFilterConfig;
 

@@ -1,1 +1,2 @@
-../Core/Src/obd2.c:11:6:requestVehicleSpeed	24	static
+../Core/Src/obd2.c:17:6:requestVehicleSpeed	32	static
+../Core/Src/obd2.c:58:6:formOBD2Packet	32	static
